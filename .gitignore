@@ -1,0 +1,7 @@
+.gradle/
+build/
+run/
+runs/
+.idea/
+gradle/wrapper/gradle-wrapper.jar
+platinum-visuals-neoforge-*.jar
