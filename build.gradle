@@ -1,0 +1,66 @@
+plugins { id 'java-library'; id 'net.neoforged.moddev' version '2.0.147' }
+group = 'dev.platinum.visuals'
+version = '1.6.0'
+base { archivesName = 'platinum-visuals-neoforge-1.21.11' }
+java { toolchain.languageVersion = JavaLanguageVersion.of(21); withSourcesJar() }
+neoForge {
+    version = '21.11.45'
+    runs { client { client(); if (project.hasProperty('uiProfile')) systemProperty 'platinum.visuals.profile', 'true'; programArguments.addAll '--width', '1280', '--height', '800' } }
+    mods { platinumvisuals { sourceSet sourceSets.main } }
+}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+// The review channel accepts text only. Binary UI/font resources are stored as
+// Base64 and restored exclusively into build/resources, never into the source tree.
+tasks.named('processResources').configure {
+    exclude '**/*.b64'
+    doLast {
+        def root = file('src/main/resources')
+        fileTree(root).matching { include '**/*.b64' }.files.each { encoded ->
+            def relative = root.toPath().relativize(encoded.toPath()).toString()
+            def output = file("$destinationDir/${relative.substring(0, relative.length() - 4)}")
+            output.parentFile.mkdirs()
+            output.bytes = Base64.mimeDecoder.decode(encoded.text)
+        }
+    }
+}
+sourceSets.test.compileClasspath += sourceSets.main.compileClasspath
+sourceSets.test.runtimeClasspath += sourceSets.main.compileClasspath
+tasks.withType(Jar).configureEach { preserveFileTimestamps = false; reproducibleFileOrder = true }
+tasks.named('jar').configure { from('LICENSE') }
+tasks.named('wrapper', Wrapper).configure { gradleVersion = '8.14.4'; distributionType = Wrapper.DistributionType.BIN }
+tasks.register('budgetChecks', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'dev.platinum.visuals.BudgetChecks'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(21) }
+}
+tasks.named('check').configure { dependsOn 'budgetChecks' }
+
+tasks.register('motionChecks', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'dev.platinum.visuals.MotionChecks'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(21) }
+}
+tasks.named('check').configure { dependsOn 'motionChecks' }
+tasks.register('visualChecks', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'dev.platinum.visuals.VisualChecks'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(21) }
+}
+tasks.named('check').configure { dependsOn 'visualChecks' }
+tasks.register('mixinChecks', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'dev.platinum.visuals.MixinChecks'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(21) }
+}
+tasks.named('check').configure { dependsOn 'mixinChecks' }
+tasks.register('worldVisualChecks', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'dev.platinum.visuals.WorldVisualChecks'
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(21) }
+}
+tasks.named('check').configure { dependsOn 'worldVisualChecks' }

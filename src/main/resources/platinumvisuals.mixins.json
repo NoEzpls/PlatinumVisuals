@@ -1,0 +1,30 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.platinum.visuals.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "EntityMixin",
+    "MinecraftMixin",
+    "LevelMixin",
+    "LightTextureMixin",
+    "GameRendererMixin",
+    "ParticleEngineMixin",
+    "PacketListenerMixin",
+    "FontMixin",
+    "GuiGraphicsMixin",
+    "ItemCooldownsMixin",
+    "ItemUseMixin",
+    "ItemStateMixin",
+    "ItemPhysicsMixin",
+    "SkyRendererMixin",
+    "CloudRendererMixin",
+    "CloudOptionsMixin",
+    "BiomeColorsMixin"
+    ,"GuiAnimationMixin"
+    ,"ExperienceOrbMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
