@@ -3,7 +3,7 @@ loaderVersion="[4,)"
 license="MIT"
 [[mods]]
 modId="platinumvisuals"
-version="1.5.1"
+version="1.6.0"
 displayName="Platinum Visuals"
 authors="Matun"
 description='''Client visuals and HUD. Right Ctrl opens the menu. V toggles Anti Invis.'''

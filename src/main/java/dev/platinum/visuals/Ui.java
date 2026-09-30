@@ -32,15 +32,14 @@ public final class Ui {
   public static Identifier id(String path) { return Identifier.fromNamespaceAndPath("platinumvisuals", path); }
   public static void opacity(float value) { opacity = Math.clamp(value,0,1); }
   public static int menuBackdrop(){return alpha(0xff090810,Feature.MONITOR_BLUR.enabled?Feature.MONITOR_BLUR.value("dim"):.52);}
-  /** Bounded multi-pass veil used while a Platinum panel is open.  It keeps the
-   * menu readable and gives the background a soft monitor-like diffusion without
-   * allocating a second framebuffer every frame. */
+  /** Adaptive framebuffer blur plus a subtle edge veil while a panel is open. */
   public static void monitorBlur(GuiGraphics g,int width,int height){
     if(!Feature.MONITOR_BLUR.enabled)return;
     // Use Minecraft's real two-pass framebuffer blur.  The old implementation
     // merely painted translucent stripes and could never blur the world.
-    Minecraft.getInstance().gameRenderer.processBlurEffect();
     int passes=Math.clamp((int)Feature.MONITOR_BLUR.value("radius")/3,1,6);
+    int realPasses=(int)Math.max(1,Math.min(3,Math.round(passes*Client.BUDGET.quality())));
+    for(int i=0;i<realPasses;i++)Minecraft.getInstance().gameRenderer.processBlurEffect();
     float strength=(float)Feature.MONITOR_BLUR.value("strength");
     float stretch=(float)Feature.MONITOR_BLUR.value("stretch");
     for(int i=0;i<passes;i++){
@@ -48,7 +47,7 @@ public final class Ui {
       int a=(int)(255*strength*.018f*(1-edge));
       g.fill(0,0,width,height,(a<<24)|(Config.accent()&0xffffff));
     }
-    int band=Math.max(0,(int)(Math.min(width,height)*.055f*stretch));
+    int band=Math.max(0,(int)(Math.min(width,height)*.045f*stretch));
     if(band>0){
       int c=alpha(0xff08070d,.34f*stretch);
       g.fill(0,0,band,height,c);g.fill(width-band,0,width,height,c);

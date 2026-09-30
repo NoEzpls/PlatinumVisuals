@@ -42,6 +42,9 @@ public enum Feature {
   HAND_ANIMATION(0,"Hand Animation","Плавная анимация удара и взмаха рукой",false),
   MOTION_BLUR(0,"Motion Blur","Мягкий визуальный шлейф движения камеры",false),
   MONITOR_BLUR(0,"Monitor Blur","Размытие мира под меню Platinum",false),
+  ASPECT_RATIO(0,"Aspect Ratio","Кинематографическое растяжение изображения",false),
+  CROSSHAIR(0,"Crosshair","Настраиваемый плавный прицел",false),
+  HIT_SOUND(0,"Hit Sounds","Локальный звук подтверждения удара",false),
   ANIMATION(0,"Animation","Плавное открытие TAB и переключение хотбара",false),
   FAST_XP(0,"Fast XP","Ускоряет визуальный полёт сфер опыта к игроку",false),
   SCREEN_TINT(0,"Screen Tint","Ненавязчивый цветной оттенок экрана",false),
@@ -97,13 +100,15 @@ public enum Feature {
     HIT_PARTICLES.add("count", "Частиц за удар", 12, 2, 40, 1);
     TRAILS.add("density", "Плотность", 2, 1, 5, 1);
     ATMOSPHERE.add("count", "Частиц за такт", 2, 1, 8, 1);
-    CUSTOM_HAND.add("x", "Основная рука · X", 0, -2, 2, .01);
-    CUSTOM_HAND.add("y", "Основная рука · Y", -.1, -2, 2, .01);
-    CUSTOM_HAND.add("z", "Основная рука · Z", 0, -3, 2, .01);
-    CUSTOM_HAND.add("scale", "Размер предмета", .9, .1, 2.5, .01);
-    CUSTOM_HAND.add("rotation", "Поворот Z", 0, -180, 180, 1);
-    CUSTOM_HAND.add("pitch", "Поворот X", 0, -180, 180, 1);
-    CUSTOM_HAND.add("yaw", "Поворот Y", 0, -180, 180, 1);
+    // Pulse-like compact baseline seen in the reference video: lower, closer
+    // to the corner and tilted away from the centre instead of vanilla-sized.
+    CUSTOM_HAND.add("x", "Основная рука · X", .16, -2, 2, .01);
+    CUSTOM_HAND.add("y", "Основная рука · Y", -.28, -2, 2, .01);
+    CUSTOM_HAND.add("z", "Основная рука · Z", -.34, -3, 2, .01);
+    CUSTOM_HAND.add("scale", "Размер предмета", .82, .1, 2.5, .01);
+    CUSTOM_HAND.add("rotation", "Поворот Z", -8, -180, 180, 1);
+    CUSTOM_HAND.add("pitch", "Поворот X", -6, -180, 180, 1);
+    CUSTOM_HAND.add("yaw", "Поворот Y", 8, -180, 180, 1);
     CUSTOM_HAND.add("offSeparate", "Левую руку отдельно", 0, 0, 1, 1);
     CUSTOM_HAND.add("offX", "Вторая рука · X", 0, -2, 2, .01);
     CUSTOM_HAND.add("offY", "Вторая рука · Y", -.1, -2, 2, .01);
@@ -137,6 +142,17 @@ public enum Feature {
     MONITOR_BLUR.add("strength","Сила размытия",.85,0,1,.01);
     MONITOR_BLUR.add("dim","Затемнение фона",.35,0,.8,.01);
     MONITOR_BLUR.add("stretch","Растяжение краёв",.18,0,1,.01);
+    MONITOR_BLUR.add("stretchSpeed","Скорость растяжения",12,3,30,1);
+    ASPECT_RATIO.add("ratio","Соотношение сторон",1.61,1,2.4,.01);
+    ASPECT_RATIO.add("smooth","Плавность",12,3,30,1);
+    CROSSHAIR.add("gap","Отступ",3,0,10,1);
+    CROSSHAIR.add("length","Длина",5,1,14,1);
+    CROSSHAIR.add("width","Толщина",1,1,4,1);
+    CROSSHAIR.add("dot","Центральная точка",1,0,1,1);
+    CROSSHAIR.add("outline","Контур",1,0,1,1);
+    CROSSHAIR.add("dynamic","Динамический прицел",1,0,1,1);
+    HIT_SOUND.add("volume","Громкость",.55,0,1,.05);
+    HIT_SOUND.add("pitch","Высота звука",1.45,.5,2,.05);
     ANIMATION.add("tabSpeed","Скорость TAB",14,4,30,1);
     ANIMATION.add("hotbarSpeed","Скорость хотбара",18,4,36,1);
     ANIMATION.add("bounce","Упругость",.22,0,.65,.01);

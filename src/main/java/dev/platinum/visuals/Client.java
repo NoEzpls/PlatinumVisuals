@@ -46,6 +46,7 @@ public final class Client {
   private static ClientLevel previousLevel;
   private static CameraType oldCamera;
   private static float zoom = 1;
+  private static float screenStretch = 1;
   private static String lastChat = "";
   private static final java.util.LinkedHashMap<String,Integer> recentChat=new java.util.LinkedHashMap<>();
   private static final java.util.EnumSet<EquipmentSlot> weakArmor=java.util.EnumSet.noneOf(EquipmentSlot.class);
@@ -95,6 +96,7 @@ public final class Client {
       target = null;
       ticks = targetTick = 0;
       zoom = 1;
+      screenStretch = 1;
       lastChat = "";
       lastDamage = 0;
       lastDamageText = "";
@@ -204,7 +206,15 @@ public final class Client {
             ? (float) Feature.ZOOM.value("factor")
             : 1;
     zoom += (wanted - zoom) * (float) (1 - Math.exp(-Math.min(.05, BUDGET.frameMs() / 1000) * 15));
-    e.setFOV(e.getFOV() / zoom);
+    boolean monitorOpen=Feature.MONITOR_BLUR.enabled&&(mc.screen instanceof VisualsScreen||mc.screen instanceof PanelScreen);
+    float aspect=Feature.ASPECT_RATIO.enabled?(float)Feature.ASPECT_RATIO.value("ratio"):1;
+    float monitor=monitorOpen?1+(float)Feature.MONITOR_BLUR.value("stretch")*.12f:1;
+    float desiredStretch=Math.max(aspect,monitor);
+    float speed=monitorOpen?(float)Feature.MONITOR_BLUR.value("stretchSpeed"):(Feature.ASPECT_RATIO.enabled?(float)Feature.ASPECT_RATIO.value("smooth"):14);
+    screenStretch=Motion.approach(screenStretch,desiredStretch,speed,Math.min(.05,BUDGET.frameMs()/1000));
+    // FOV adjustment keeps the live world moving beneath the non-pausing menu
+    // and produces the smooth edge stretch visible in the reference client.
+    e.setFOV(e.getFOV() / zoom / screenStretch);
   }
 
   private static void camera(ViewportEvent.ComputeCameraAngles e) {
@@ -241,6 +251,7 @@ public final class Client {
       Feature f = Feature.HAND_ANIMATION.enabled ? Feature.HAND_ANIMATION : Feature.CUSTOM_HAND;
       float speed = (float) f.value("speed");
       float rawSwing = Math.clamp(e.getSwingProgress(), 0, 1);
+      float equipProgress=Math.clamp(e.getEquipProgress(),0,1);
       // Speed changes the curve rather than the game timer, so animation stays
       // synchronized with hits while still feeling faster or more deliberate.
       float swing = (float)Math.pow(rawSwing, 1f / Math.max(.2f, speed));
@@ -255,6 +266,11 @@ public final class Client {
       float sy = (float)f.value("swingY") * power;
       float sz = (float)f.value("swingZ") * power;
       boolean using = Minecraft.getInstance().player != null && Minecraft.getInstance().player.isUsingItem();
+      if(f.value("equip")>0&&equipProgress>0){
+        float equipEase=equipProgress*equipProgress*(3-2*equipProgress);
+        e.getPoseStack().translate(0,-equipEase*.075f,-equipEase*.045f);
+        e.getPoseStack().mulPose(Axis.ZP.rotationDegrees(handed*equipEase*4));
+      }
       if (!(using && f.value("whileUsing") == 0) && style != 3) {
         switch (style) {
           case 1 -> { // плавная дуга
@@ -335,6 +351,10 @@ public final class Client {
     clickTimes.addLast(System.nanoTime());
     trimClicks();
     EFFECTS.attack(living);
+    if(Feature.HIT_SOUND.enabled){
+      var mc=Minecraft.getInstance();
+      if(mc.player!=null)mc.player.playSound(net.minecraft.sounds.SoundEvents.EXPERIENCE_ORB_PICKUP,(float)Feature.HIT_SOUND.value("volume"),(float)Feature.HIT_SOUND.value("pitch"));
+    }
   }
 
   private static void trimClicks() {
@@ -386,6 +406,7 @@ public final class Client {
   }
 
   private static void layer(RenderGuiLayerEvent.Pre e) {
+    if(Feature.CROSSHAIR.enabled&&e.getName().getPath().equals("crosshair")){e.setCanceled(true);return;}
     if (!Feature.STREAMER.enabled) return;
     String p = e.getName().getPath();
     if (p.equals("chat") || p.equals("tab_list") || p.equals("scoreboard_sidebar"))

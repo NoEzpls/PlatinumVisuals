@@ -120,7 +120,7 @@ public final class VisualsScreen extends Screen {
     }
     Ui.button(g,"Небо и мир",(int)x+10,(int)y+H+6,116,false,false);
     Ui.button(g,"Атмосфера",(int)x+134,(int)y+H+6,110,false,false);
-    Ui.small(g,"Platinum Visuals 1.5  ·  Right Ctrl  ·  H: редактор HUD",x+10,y+H+38,Ui.MUTED);
+    Ui.small(g,"Platinum Visuals 1.6  ·  Right Ctrl  ·  H: редактор HUD",x+10,y+H+38,Ui.MUTED);
   }
   private void drawSearch(GuiGraphics g){
     float sx=x+W-169,sy=y+13;

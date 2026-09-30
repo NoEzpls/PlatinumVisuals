@@ -1,4 +1,4 @@
-# Platinum Visuals 1.5.0 — Minecraft 1.21.11 / NeoForge
+# Platinum Visuals 1.6.0 — Minecraft 1.21.11 / NeoForge
 
 Самостоятельный клиентский мод в стиле визуальных клиентов. Это собственная реализация, а не официальный Pulse Visuals и не точная копия всех его модулей.
 
@@ -6,8 +6,17 @@
 
 ## Установка готового мода
 
+### Скачать через GitHub Actions
+
+1. Откройте вкладку **Actions** репозитория и выберите **Build Platinum Visuals JAR**.
+2. Откройте последний зелёный запуск. Если запусков ещё нет, нажмите **Run workflow**, затем ещё раз **Run workflow**.
+3. Внизу страницы запуска, в разделе **Artifacts**, скачайте `platinum-visuals-neoforge-1.21.11-1.6.0`.
+4. Распакуйте скачанный ZIP: внутри будет установочный `platinum-visuals-neoforge-1.21.11-1.6.0.jar`.
+
+GitHub упаковывает артефакт Actions в ZIP автоматически. Файл с окончанием `-sources.jar` устанавливать не нужно.
+
 1. Выбрать профиль **Minecraft 1.21.11 + NeoForge 21.11.45** (Java 21).
-2. Убрать старый JAR Platinum/Aria Visuals из папки `mods` этого профиля и положить собранный `build/libs/platinum-visuals-neoforge-1.21.11-1.5.1.jar`. Не оставлять одновременно две версии.
+2. Убрать старый JAR Platinum/Aria Visuals из папки `mods` этого профиля и положить собранный `build/libs/platinum-visuals-neoforge-1.21.11-1.6.0.jar`. Не оставлять одновременно две версии.
 3. Удалить отдельный `antiinvis-1.1.0.jar` из этого профиля: аналогичный антиинвиз уже встроен. Иначе его отдельный переключатель может мешать общему меню.
 4. Зайти в мир и нажать **правый Ctrl**. Также меню доступно через **Mods → Platinum Visuals → Config**.
 
@@ -63,16 +72,16 @@ Zoom, Freelook и открытие меню также переназначаю�
 
 Внешний шейдер-пак или мод рендера может рисовать собственное небо, облака, воду или обводки. Совместимость с такими сочетаниями не проверялась.
 
-## Реализованные модули (69)
+## Реализованные модули (72)
 
 | Раздел | Модули |
 |---|---|
 | HUD | Watermark, Armor HUD, Potions, Hotkeys, Inventory HUD, Totem Bar, Saturation, Cooldowns, Target HUD, Low HP, TNT Timer, Frame Monitor |
 | Визуалы — эффекты | Hit Particles, Hit Bubble, Kill Effect, Trails, Jump Circles, World Particles |
 | Визуалы — выделение | Target Glow, Glow Players, Item Highlighter, Block Overlay |
-| Визуалы — камера и мир | Custom Hand, Hand Animation, Zoom, Freelook, Time Changer, Sky Color, Clouds, Water Color, Fog Color, Fullbright, Clear Overlays, No Hurt Shake, No View Bobbing, Weather, Item Physics, Motion Blur, Screen Tint, Low Fire, No Liquid Bob |
+| Визуалы — камера и мир | Custom Hand, Hand Animation, Monitor Blur, Aspect Ratio, Crosshair, Zoom, Freelook, Time Changer, Sky Color, Clouds, Water Color, Fog Color, Fullbright, Clear Overlays, No Hurt Shake, No View Bobbing, Weather, Item Physics, Motion Blur, Screen Tint, Low Fire, No Liquid Bob |
 | Визуалы — сущности и предметы | Name Tags, Name Health, Name Distance, Item Names, Item Stacks, Arrow Trails, Target Glow, Glow Players, Item Highlighter, Block Overlay, Block Break, Item Shadow, Glint Color |
-| Визуалы — боевые эффекты | Hit Marker, Damage Numbers, Damage Tilt, Totem Pop Effect, Particle Color, Hit Particles, Hit Bubble, Kill Effect, Trails, Jump Circles, World Particles |
+| Визуалы — боевые эффекты | Hit Sounds, Hit Marker, Damage Numbers, Damage Tilt, Totem Pop Effect, Particle Color, Hit Particles, Hit Bubble, Kill Effect, Trails, Jump Circles, World Particles |
 | Функции | Anti Invis, Optimization, Shulker Preview, Streamer Mode, Chat Copy, Pickup Logger, Totem Tracker, Armor Notifier, Chat Helper |
 | HUD — дополнительные панели | CPS, FPS Graph, Ping, Damage Log, Frame Monitor |
 
@@ -101,7 +110,7 @@ Zoom, Freelook и открытие меню также переназначаю�
 
 Таймер с `≈` запускается при принятом клиентом действии использования. Это оценка, **не подтверждение сервера**: отклонение действия сервером, задержка сети или особая механика предмета могут дать расхождение. При получении настоящего cooldown-пакета для той же группы оценка заменяется точным клиентским откатом. Таймеры очищаются при смене мира/подключения. Правила и активные серверные таймеры не смешиваются в процентах.
 
-## Интерфейс 1.5.0
+## Интерфейс 1.6.0
 
 Гладкий шрифт Inter с кириллицей, компактные строки в двух колонках, вкладки сверху, боковые инструменты, поиск по всем разделам и панель настроек справа. Плавные анимации зависят от времени, а не от количества кадров. В оформлении доступны HSV/HEX, масштаб меню, прозрачность HUD, длительность анимаций, мягкие тени и уменьшение движения. Перечень изменений — в CHANGELOG.md.
 
@@ -135,7 +144,7 @@ Windows: `gradlew.bat build`
 
 Linux/macOS: `chmod +x gradlew` и `./gradlew build`
 
-Результат: `build/libs/platinum-visuals-neoforge-1.21.11-1.5.1.jar`.
+Результат: `build/libs/platinum-visuals-neoforge-1.21.11-1.6.0.jar`.
 
 Проверка MotionChecks сравнивает длительность анимации при 30, 60, 120, 144 и 240 FPS. Для диагностики `gradlew runClient -PuiProfile` пишет время подготовки GUI на CPU и статистику кэша в лог. Это не замер GPU или FPS игры.
 

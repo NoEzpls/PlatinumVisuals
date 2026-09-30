@@ -10,6 +10,7 @@ public final class VisualAddons {
 
   public static void render(GuiGraphics g, int width, int height, boolean edit) {
     long now = System.nanoTime();
+    if(Feature.CROSSHAIR.enabled&&!edit)renderCrosshair(g,width,height);
     if (Feature.MOTION_BLUR.enabled && !edit) {
       float strength = (float) Feature.MOTION_BLUR.value("strength");
       int bands = 6;
@@ -87,6 +88,22 @@ public final class VisualAddons {
       Ui.center(g, "TOTEM POP", width / 2f, height / 2f + 38, Config.accent(), 1.05f);
       Ui.opacity(1);
     }
+  }
+
+  private static void renderCrosshair(GuiGraphics g,int width,int height){
+    var mc=Minecraft.getInstance();int cx=width/2,cy=height/2;
+    int gap=(int)Feature.CROSSHAIR.value("gap"),length=(int)Feature.CROSSHAIR.value("length"),thick=(int)Feature.CROSSHAIR.value("width");
+    if(Feature.CROSSHAIR.value("dynamic")>0&&mc.player!=null)gap+=Math.min(7,(int)Math.round(mc.player.getDeltaMovement().horizontalDistance()*18));
+    int color=Feature.CROSSHAIR.effectColor(),outline=0xb0000000;
+    if(Feature.CROSSHAIR.value("outline")>0){
+      g.fill(cx-thick/2-1,cy-gap-length-1,cx+(thick+1)/2+1,cy-gap+1,outline);
+      g.fill(cx-thick/2-1,cy+gap-1,cx+(thick+1)/2+1,cy+gap+length+1,outline);
+      g.fill(cx-gap-length-1,cy-thick/2-1,cx-gap+1,cy+(thick+1)/2+1,outline);
+      g.fill(cx+gap-1,cy-thick/2-1,cx+gap+length+1,cy+(thick+1)/2+1,outline);
+    }
+    g.fill(cx-thick/2,cy-gap-length,cx+(thick+1)/2,cy-gap,color);g.fill(cx-thick/2,cy+gap,cx+(thick+1)/2,cy+gap+length,color);
+    g.fill(cx-gap-length,cy-thick/2,cx-gap,cy+(thick+1)/2,color);g.fill(cx+gap,cy-thick/2,cx+gap+length,cy+(thick+1)/2,color);
+    if(Feature.CROSSHAIR.value("dot")>0)g.fill(cx,cy,cx+1,cy+1,color);
   }
 
   private static void panel(GuiGraphics g, String id, int x, int y, int w, int h, boolean edit) {
